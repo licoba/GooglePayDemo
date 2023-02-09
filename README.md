@@ -16,4 +16,5 @@
 - 3、applicationId一定要和Google后台配置的一样，否则查询不到商品列表
 
 ### 截图
-![IMG_0862](https://user-images.githubusercontent.com/19327381/217801162-6a06ae55-75ed-44b3-b536-d90622c1d979.JPG)
+<img src="https://user-images.githubusercontent.com/19327381/217801162-6a06ae55-75ed-44b3-b536-d90622c1d979.JPG" width=300/>
+
