@@ -9,3 +9,9 @@
 具体的问题在这里：https://github.com/android/play-billing-samples/issues/185
 
 官方仍然没有解决 （截止2023/02/09）
+
+
+### 注意事项
+- 1、必须连接非香港/台湾的国外VPN才能成功
+- 2、手机的Google Play商店一定要能正常打开，网络正常
+- 3、applicationId一定要和Google后台配置的一样，否则查询不到商品列表

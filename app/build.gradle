@@ -8,7 +8,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.googlepaydemo"
+        applicationId "com.translation666"
         minSdk 24
         targetSdk 33
         versionCode 1

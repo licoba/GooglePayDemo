@@ -10,6 +10,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kongzue.dialogx.dialogs.TipDialog
+import com.kongzue.dialogx.dialogs.WaitDialog
 import kotlinx.coroutines.Dispatchers
 
 
@@ -19,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 class PayActivity : AppCompatActivity() {
 
     private lateinit var btnInitPay: Button
-    private  lateinit var btnConnect: Button
+    private lateinit var btnConnect: Button
     private lateinit var btnQuery: Button
 
     // 文档：https://developer.android.com/google/play/billing/integrate?hl=zh-cn
@@ -80,8 +81,10 @@ class PayActivity : AppCompatActivity() {
                 .build()
 
         try {
+            WaitDialog.show("加载中...")
             billingClient.queryProductDetailsAsync(queryProductDetailsParams, queryListener)
         } catch (e: Exception) {
+            WaitDialog.dismiss()
             PopTip.show("请先初始化").iconError()
         }
     }
@@ -123,7 +126,12 @@ class PayActivity : AppCompatActivity() {
     // 商品查询的监听列表
     private val queryListener =
         ProductDetailsResponseListener { billingResult, productDetailsList ->
-            LogUtils.e( "查询成功，谷歌Google的SKU列表 ： \n$productDetailsList")
+            WaitDialog.dismiss()
+            if (productDetailsList.isNotEmpty())
+                PopTip.show("查询成功，请在logcat查看日志打印").iconSuccess()
+            else
+                PopTip.show("查询失败，请检查是否连接到了Google Play").iconError()
+            LogUtils.e("查询成功，谷歌Google的SKU列表 ： \n$productDetailsList")
         }
 
 
