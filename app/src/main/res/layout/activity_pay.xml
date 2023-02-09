@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="12dp"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    tools:context=".PayActivity">
+
+    <TextView
+        android:text="提示：\n1、必须连接非香港/台湾的国外VPN才能成功
+\n2、手机的Google Play商店一定要能正常打开，网络正常
+
+\n
+"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+    <Button
+        android:id="@+id/btn_init_google_pay"
+        android:text="初始化 billingClient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <Button
+        android:id="@+id/btn_connect"
+        android:text="连接到 Google Play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <Button
+        android:id="@+id/btn_query"
+        android:text="查询SKU列表"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
