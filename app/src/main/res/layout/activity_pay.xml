@@ -11,7 +11,7 @@
     <TextView
         android:text="提示：\n1、必须连接非香港/台湾的国外VPN才能成功
 \n2、手机的Google Play商店一定要能正常打开，网络正常
-
+\n3、applicationId一定要和Google后台配置的一致
 \n
 "
         android:layout_width="match_parent"
@@ -38,4 +38,26 @@
         android:text="查询SKU列表"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="当前选择商品："
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_cur_product"
+        android:textColor="#ff0000"
+        android:text="未选择"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+
+    <Button
+        android:id="@+id/btn_start_pay"
+        android:text="发起支付"
+        android:enabled="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
