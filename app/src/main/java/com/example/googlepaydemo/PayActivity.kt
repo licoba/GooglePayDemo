@@ -12,8 +12,8 @@ import com.blankj.utilcode.util.ToastUtils
 import com.blankj.utilcode.util.ToastUtils.MODE.DARK
 import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.dialogs.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 
@@ -24,6 +24,7 @@ class PayActivity : AppCompatActivity() {
 
     private lateinit var btnInitPay: Button
     private lateinit var btnConnect: Button
+    private lateinit var btnDisconnect: Button
     private lateinit var btnQuery: Button
     private lateinit var btnStartPay: Button
     private lateinit var tvCurProduct: TextView
@@ -41,9 +42,10 @@ class PayActivity : AppCompatActivity() {
         setContentView(R.layout.activity_pay)
         DialogX.onlyOnePopTip = true
         context = this@PayActivity
-        mToast = ToastUtils.make().setMode(DARK).setGravity(Gravity.CENTER,0,100)
+        mToast = ToastUtils.make().setMode(DARK).setGravity(Gravity.CENTER, 0, 100)
         btnInitPay = findViewById(R.id.btn_init_google_pay)
         btnConnect = findViewById(R.id.btn_connect)
+        btnDisconnect = findViewById(R.id.btn_end_connect)
         btnQuery = findViewById(R.id.btn_query)
         btnStartPay = findViewById(R.id.btn_start_pay)
         tvCurProduct = findViewById(R.id.tv_cur_product)
@@ -51,8 +53,13 @@ class PayActivity : AppCompatActivity() {
         btnConnect.setOnClickListener { connectGooglePlay() }
         btnQuery.setOnClickListener { queryProducts() }
         btnStartPay.setOnClickListener { startPay() }
+        btnDisconnect.setOnClickListener { endConnect() }
     }
 
+    private fun endConnect() {
+        PopTip.show("结束连接")
+        billingClient.endConnection()
+    }
 
     private fun startPay() {
         PopTip.show("发起支付")
@@ -72,16 +79,21 @@ class PayActivity : AppCompatActivity() {
 
     private fun initGooglePay() {
         PopTip.show("初始化billingClient成功").iconSuccess()
-        billingClient = BillingClient.newBuilder(context)
-            .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases()
-            .build()
+        BillingClientUtil.setPurchasesUpdatedListener(purchasesUpdatedListener)
+        BillingClientUtil.initGooglePay()
+        billingClient = BillingClientUtil.getClient()
+//        billingClient = BillingClient.newBuilder(context)
+//            .setListener(purchasesUpdatedListener)
+//            .enablePendingPurchases()
+//            .build()
     }
 
     private fun connectGooglePlay() {
-        LogUtils.d("连接到Google Play")
+        LogUtils.d("开始连接到Google Play")
         try {
-            billingClient.startConnection(connListener)
+            BillingClientUtil.setConnListener(connListener)
+            BillingClientUtil.startConnect()
+//            billingClient.startConnection(connListener)
         } catch (e: Exception) {
             PopTip.show("请先初始化").iconError()
         }
@@ -111,7 +123,9 @@ class PayActivity : AppCompatActivity() {
 
         try {
             WaitDialog.show("加载中...")
-            billingClient.queryProductDetailsAsync(queryProductDetailsParams, queryListener)
+            BillingClientUtil.setQueryListener(queryListener)
+            BillingClientUtil.startQuery(queryProductDetailsParams)
+//            billingClient.queryProductDetailsAsync(queryProductDetailsParams, queryListener)
         } catch (e: Exception) {
             WaitDialog.dismiss()
             PopTip.show("请先初始化").iconError()
@@ -119,19 +133,20 @@ class PayActivity : AppCompatActivity() {
     }
 
 
-    private val connListener = object : BillingClientStateListener {
+    private var connListener: BillingClientStateListener = object : BillingClientStateListener {
         override fun onBillingSetupFinished(billingResult: BillingResult) {
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                LogUtils.d("连接到Google Play成功，可以查询商品列表了")
-                PopTip.show("连接到Google Play成功\n可以查询商品列表了").iconSuccess()
+                MainScope().launch {
+                    btnDisconnect.isEnabled = true
+                    LogUtils.d("连接Google Play成功，可以查询商品列表了")
+                    PopTip.show("连接到Google Play成功\n可以查询商品列表了").iconSuccess()
+                }
             } else {
                 PopTip.show("连接结果：$billingResult").iconError()
             }
         }
 
         override fun onBillingServiceDisconnected() {
-            // Try to restart the connection on the next request to
-            // Google Play by calling the startConnection() method.
             PopTip.show("onBillingServiceDisconnected")
         }
     }
@@ -158,7 +173,7 @@ class PayActivity : AppCompatActivity() {
             }
         }
 
-    private fun consumePurchase(purchase: Purchase){
+    private fun consumePurchase(purchase: Purchase) {
         GlobalScope.launch {
             val consumeParams =
                 ConsumeParams.newBuilder()
@@ -168,7 +183,6 @@ class PayActivity : AppCompatActivity() {
             LogUtils.d("消费了商品 ${purchase}，下次可以继续购买")
         }
     }
-
 
 
     // 商品查询的监听列表
@@ -195,6 +209,11 @@ class PayActivity : AppCompatActivity() {
                 }
 
         }
+
+    override fun onDestroy() {
+        BillingClientUtil.clearListener()
+        super.onDestroy()
+    }
 
 
 }
