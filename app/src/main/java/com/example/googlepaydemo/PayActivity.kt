@@ -197,8 +197,9 @@ class PayActivity : AppCompatActivity() {
             mProductList.clear()
             mProductList.addAll(productDetailsList)
             if (productDetailsList.isEmpty()) return@ProductDetailsResponseListener
-            val list =
-                productDetailsList.map { "${it.productId} • ${it.name} • ${it.oneTimePurchaseOfferDetails?.formattedPrice}" }
+            val list =productDetailsList.map { "${it.name} • ${it.oneTimePurchaseOfferDetails?.formattedPrice}" }
+//                productDetailsList.map { "${it.productId} • ${it.name} • ${it.oneTimePurchaseOfferDetails?.formattedPrice}" }
+
             BottomMenu.show(list)
                 .setOnMenuItemClickListener { dialog, text, index ->
                     PopTip.show("选择了 ${text}")

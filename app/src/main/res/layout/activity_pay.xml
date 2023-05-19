@@ -10,7 +10,7 @@
 
     <TextView
         android:text="提示：\n1、必须连接非香港/台湾的国外VPN才能成功
-\n2、手机的Google Play商店一定要能正常打开，网络正常
+\n2、手机的Google Play商店一定要能正常打开，网络正常，具体的验证方式：找到「游戏」-「付费」那一栏，确保能正常显示商品列表
 \n3、applicationId一定要和Google后台配置的一致
 \n
 "
